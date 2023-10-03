@@ -1,0 +1,31 @@
+﻿@model Producto
+@{
+    ViewData["Title"] = "Detalles producto";
+}
+
+<link rel="stylesheet" href="../Views/styles.css" />
+
+<h1>@ViewData["Title"]</h1>
+<p>En esta página se muestran las opciones para crear el producto</p>
+<form method="get">
+    <div class="col-md-6">
+        <label>Nombre</label>
+        <input asp-for="Nombre" class="form-control">
+    </div>
+    <div class="col-md-6">
+        <label>Descripción</label>
+        <input asp-for="Descripcion" class="form-control">
+    </div>
+
+    <div class="col-5">
+        <label>Cantidad</label>
+        <input asp-for="Cantidad" class="form-control">
+    </div>
+
+    <div class="row" style="margin-top: 1rem">
+        <div class="col-12">
+           
+            <a asp-action="Index" class="btn btn-outline-primary">Regresar</a>
+        </div>
+    </div>
+</form>
