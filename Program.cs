@@ -1,7 +1,11 @@
+using CRUDMVC.Servicios;
+
 var builder = WebApplication.CreateBuilder(args);
+
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+builder.Services.AddScoped<IServicioApi, Servicio_API>();
 
 var app = builder.Build();
 

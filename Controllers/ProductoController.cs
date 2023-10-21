@@ -1,4 +1,5 @@
 ﻿using CRUDMVC.Models;
+using CRUDMVC.Servicios;
 using CRUDMVC.Util;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -8,17 +9,36 @@ namespace CRUDMVC.Controllers
     public class ProductoController : Controller
     {
         // GET: ProductoController
-        public IActionResult Index()
+        private readonly IServicioApi servicioAPI;
+
+        public ProductoController(IServicioApi servicioAPI)
         {
-            return View(Utils.ListaProducto);
+            this.servicioAPI = servicioAPI;
+        }
+
+        public async Task<IActionResult> Index()
+        {
+
+
+            var lista = await servicioAPI.Lista();
+            return View(lista);
+
+
+
+        }
+
+        private IActionResult View(Func<Task<List<Producto>>> lista)
+        {
+            throw new NotImplementedException();
         }
 
         // GET: ProductoController/Details/5
 
         [HttpGet]
-        public IActionResult Details(int IdProducto)
+        public async Task<IActionResult> Details(int IdProducto)
         {
-            Producto producto = Utils.ListaProducto.Find(x => x.IdProducto == IdProducto);
+            Producto producto = await servicioAPI.Obtener(IdProducto);
+
             if (producto != null)
             {
                 return View(producto);
@@ -34,20 +54,21 @@ namespace CRUDMVC.Controllers
 
         // GET: ProductoController/Create
         [HttpPost]
-        public IActionResult Create(Producto producto)
+        public async Task<IActionResult> Create(Producto producto)
         {
-            int id = Utils.ListaProducto.Count() + 1;
-            producto.IdProducto = id;
-            Utils.ListaProducto.Add(producto);
+            producto.IdProducto = 0;
+            await servicioAPI.Guardar(producto);
+            Console.WriteLine("funciona");
             return RedirectToAction("Index");
         }
 
 
 
         // GET: ProductoController/Edit/5
-        public IActionResult Edit(int IdProducto)
+
+        public async Task<IActionResult> EditAsync(int IdProducto)
         {
-            Producto producto = Utils.ListaProducto.Find(x => x.IdProducto == IdProducto);
+            Producto producto = await servicioAPI.Obtener(IdProducto);
             if (producto != null)
             {
                 return View(producto);
@@ -55,34 +76,32 @@ namespace CRUDMVC.Controllers
             return RedirectToAction("Index");
         }
         [HttpPost]
-        public IActionResult Edit(Producto producto)
+        public async Task<IActionResult> EditAsync(Producto producto)
         {
             if (producto == null)
             {
                 return BadRequest("El producto es nulo");
             }
 
-            Producto productoExistente = Utils.ListaProducto.FirstOrDefault(p => p.IdProducto == producto.IdProducto);
+            Producto productoExistente = await servicioAPI.Obtener(producto.IdProducto); 
 
             if (productoExistente == null)
             {
                 return NotFound("El producto no fue encontrado");
             }
 
-            productoExistente.Nombre = producto.Nombre;
-            productoExistente.Cantidad = producto.Cantidad;
-            productoExistente.Descripcion = producto.Descripcion;
+            await servicioAPI.Editar(producto);
 
             return RedirectToAction("Index");
         }
 
         // GET: ProductoController/Delete/5
-        public IActionResult Delete(int IdProducto)
+        public async Task<IActionResult> Delete(int IdProducto)
         {
-            Producto producto = Utils.ListaProducto.Find(x =>  x.IdProducto == IdProducto);
+            Producto producto = await servicioAPI.Obtener(IdProducto); ;
             if (producto != null) 
             {
-                Utils.ListaProducto.Remove(producto);
+                await servicioAPI.Eliminar(producto);
             }
             return RedirectToAction("Index");
         }

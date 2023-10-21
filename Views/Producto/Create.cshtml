@@ -7,7 +7,7 @@
 
 <h1>@ViewData["Title"]</h1>
 <p>En esta página se muestran las opciones para crear el producto</p>
-<form >
+<form method="post">
     <div class="col-md-6">
         <label>Nombre</label>
         <input asp-for="Nombre" class="form-control">
@@ -24,7 +24,6 @@
     
     <div class="row" style="margin-top: 1rem">
         <div class="col-12">
-            <button type="submit" class="btn btn-outline-primary">Submit</button>
             <button type="submit" asp-action="Create" class="btn btn-outline-primary">Guardar</button>
             <a asp-action="Index" class="btn btn-outline-primary">Regresar</a>
         </div>
